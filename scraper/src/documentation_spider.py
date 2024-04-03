@@ -38,6 +38,14 @@ class DocumentationSpider(CrawlSpider, SitemapSpider):
     reason_to_stop = None
 
     @staticmethod
+    def get_body(response):
+        try:
+            body = response.body.decode(response.encoding)
+            return body
+        except (UnicodeError, ValueError, AttributeError):
+            return response.body
+
+    @staticmethod
     def to_any_scheme(url):
         """Return a regex that represent the URL and match any scheme from it"""
         return url if not re.match(
@@ -149,7 +157,8 @@ class DocumentationSpider(CrawlSpider, SitemapSpider):
         return super()._parse(response, **kwargs)
 
     def add_records(self, response, from_sitemap):
-        records = self.strategy.get_records_from_response(response)
+        body = DocumentationSpider.get_body(response)
+        records = self.strategy.get_records_from_response(body, response.url)
         self.typesense_helper.add_records(records, response.url, from_sitemap)
 
         DocumentationSpider.NB_INDEXED += len(records)

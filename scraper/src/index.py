@@ -12,11 +12,11 @@ from scrapy.crawler import CrawlerProcess
 from .typesense_helper import TypesenseHelper
 from .config.config_loader import ConfigLoader
 from .documentation_spider import DocumentationSpider
+from .confluence_spider import ConfluenceSpider
 from .strategies.default_strategy import DefaultStrategy
 from .custom_downloader_middleware import CustomDownloaderMiddleware
 from .custom_dupefilter import CustomDupeFilter
 from .config.browser_handler import BrowserHandler
-from .strategies.algolia_settings import AlgoliaSettings
 
 try:
     # disable boto (S3 download)
@@ -34,6 +34,7 @@ def run_config(config):
     config = ConfigLoader(config)
     CustomDownloaderMiddleware.driver = config.driver
     DocumentationSpider.NB_INDEXED = 0
+    ConfluenceSpider.NB_INDEXED = 0
 
     strategy = DefaultStrategy(config)
 
@@ -43,6 +44,7 @@ def run_config(config):
         config.custom_settings
     )
     typesense_helper.create_tmp_collection()
+
 
     root_module = 'src.' if __name__ == '__main__' else 'scraper.src.'
     DOWNLOADER_MIDDLEWARES_PATH = root_module + 'custom_downloader_middleware.' + CustomDownloaderMiddleware.__name__
@@ -103,6 +105,13 @@ def run_config(config):
         'DEFAULT_REQUEST_HEADERS': DEFAULT_REQUEST_HEADERS,
         'TELNETCONSOLE_ENABLED': False
     })
+    
+    if os.getenv("CONFLUENCE_API_KEY"):
+        process.crawl(
+            ConfluenceSpider,
+            typesense_helper=typesense_helper,
+            strategy=strategy
+        )
 
     process.crawl(
         DocumentationSpider,
@@ -122,15 +131,16 @@ def run_config(config):
 
     print("")
 
-    if DocumentationSpider.NB_INDEXED > 0:
+    if DocumentationSpider.NB_INDEXED > 0 or ConfluenceSpider.NB_INDEXED > 0:
+        total_nb_indexed = DocumentationSpider.NB_INDEXED + ConfluenceSpider.NB_INDEXED
         typesense_helper.commit_tmp_collection()
-        print('Nb hits: {}'.format(DocumentationSpider.NB_INDEXED))
-        config.update_nb_hits_value(DocumentationSpider.NB_INDEXED)
+        print('Nb hits: {}'.format(total_nb_indexed))
+        config.update_nb_hits_value(total_nb_indexed)
     else:
         print('Crawling issue: nbHits 0 for ' + config.index_name)
         exit(EXIT_CODE_NO_RECORD)
-    print("")
 
+    print("")
 
 if __name__ == '__main__':
     from os import environ
