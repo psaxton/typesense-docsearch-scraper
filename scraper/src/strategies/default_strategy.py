@@ -28,7 +28,7 @@ class DefaultStrategy(AbstractStrategy):
         """Select an element in the current DOM using specified CSS selector"""
         return XPath(path)(self.dom) if len(path) > 0 else []
 
-    def get_records_from_response(self, body, current_page_url=None):
+    def get_records_from_response(self, body, current_page_url=None, is_confluence=False):
         """
         Main method called from the DocumentationSpider. Will be passed the HTTP
         response and will return a list of all records"""
@@ -40,7 +40,7 @@ class DefaultStrategy(AbstractStrategy):
         self.dom = self.remove_from_dom(self.dom,
                                         self.config.selectors_exclude)
 
-        records = self.get_records_from_dom(current_page_url)
+        records = self.get_records_from_dom(current_page_url, is_confluence)
 
         return records
 
@@ -60,7 +60,7 @@ class DefaultStrategy(AbstractStrategy):
 
         return record
 
-    def get_records_from_dom(self, current_page_url=None):
+    def get_records_from_dom(self, current_page_url=None, is_confluence=False):
 
         if self.dom is None:
             exit('DefaultStrategy.dom is not defined')
@@ -68,7 +68,7 @@ class DefaultStrategy(AbstractStrategy):
         # Reset it to be able to have a clean instance when testing
         self.global_content = {}
 
-        selectors = self.get_selectors_set(current_page_url)
+        selectors = self.get_selectors_set(current_page_url, is_confluence)
         levels = self._get_used_levels(selectors)
 
         # We get a big selector that matches all relevant nodes, in order

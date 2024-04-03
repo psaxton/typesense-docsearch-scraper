@@ -45,7 +45,6 @@ def run_config(config):
     )
     typesense_helper.create_tmp_collection()
 
-
     root_module = 'src.' if __name__ == '__main__' else 'scraper.src.'
     DOWNLOADER_MIDDLEWARES_PATH = root_module + 'custom_downloader_middleware.' + CustomDownloaderMiddleware.__name__
     DUPEFILTER_CLASS_PATH = root_module + 'custom_dupefilter.' + CustomDupeFilter.__name__
