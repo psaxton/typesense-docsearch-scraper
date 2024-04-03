@@ -26,23 +26,9 @@ class AbstractStrategy:
             json.dumps(data, indent=2, sort_keys=True, separators=(',', ': ')))
 
     @staticmethod
-    def get_body(response):
-        try:
-            body = response.body.decode(response.encoding)
-            return body
-        except (UnicodeError, ValueError, AttributeError):
-            return response.body
-
-    @staticmethod
-    def get_dom(response):
+    def get_dom(body):
         """Get the DOM representation of the webpage"""
-        try:
-            body = response.body.decode(response.encoding)
-            result = lxml.html.fromstring(body)
-        except (UnicodeError, ValueError):
-            result = lxml.html.fromstring(response.body)
-
-        return result
+        return lxml.html.fromstring(body)
 
     def get_strip_chars(self, level, selectors):
         if selectors[level]['strip_chars'] is None:
@@ -60,7 +46,10 @@ class AbstractStrategy:
 
         return selectors_key
 
-    def get_selectors_set(self, url):
+    def get_selectors_set(self, url, is_confluence = False):
+        if is_confluence:
+            return self.config.selectors['confluence']
+
         selectors_key = self.get_selectors_set_key(url)
 
         if selectors_key not in self.config.selectors:
