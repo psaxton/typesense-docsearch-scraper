@@ -15,6 +15,7 @@ class ConfluenceSpider(Spider):
     strategy: DefaultStrategy = None
     get_content_url = ""
     headers = { }
+    base_url = ""
 
     def __init__(self, typesense_helper, strategy):
         # Scrapy config
@@ -23,8 +24,12 @@ class ConfluenceSpider(Spider):
         self.remove_get_params = False
         self.typesense_helper = typesense_helper
         self.strategy = strategy
-        self.get_content_url = f'{os.environ.get("CONFLUENCE_BASE_URL", None)}/rest/api/content?type=page&spaceKey={os.environ.get("CONFLUENCE_SPACE_KEY", None)}&expand=body.storage&limit={os.environ.get("CONFLUENCE_PAGE_LIMIT", '100')}'
-        self.headers = {'Authorization' : f'Bearer {os.environ.get("CONFLUENCE_API_KEY", None)}' }
+        self.base_url = os.environ.get("CONFLUENCE_BASE_URL", None)
+        space_key = os.environ.get("CONFLUENCE_SPACE_KEY", None)
+        page_limit = os.environ.get("CONFLUENCE_PAGE_LIMIT", "100")
+        api_key = os.environ.get("CONFLUENCE_API_KEY", None)
+        self.get_content_url = f'{self.base_url}/rest/api/content?type=page&spaceKey={space_key}&expand=body.storage&limit={page_limit}'
+        self.headers = {'Authorization' : f'Bearer {api_key}' }
 
     def start_requests(self):
         yield Request(self.get_content_url, headers = self.headers, callback = self.parse)
@@ -45,7 +50,9 @@ class ConfluenceSpider(Spider):
                 </body>
             </html>
             """
-            current_page_url = f'{os.environ.get("CONFLUENCE_BASE_URL", None)}{result["_links"]["webui"]}'
+
+            page_relative_url = result["_links"]["webui"]
+            current_page_url = f'{self.base_url}{page_relative_url}'
             records = self.strategy.get_records_from_response(html, current_page_url, is_confluence=True)
             self.typesense_helper.add_records(records, response.url, False)
             ConfluenceSpider.NB_INDEXED += len(records)
