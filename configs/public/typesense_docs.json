@@ -2,7 +2,7 @@
   "index_name": "typesense_docs-test",
   "start_urls": [
     {
-      "url": "https://typesense.org/docs/(?P<version>.*?)/",
+      "url": "https://claimxperience.helpdocs.io/l/enUS",
       "variables": {
         "version": [
           "0.21.0"
@@ -12,19 +12,40 @@
   ],
   "selectors": {
     "default": {
-      "lvl0": ".content__default h1",
-      "lvl1": ".content__default h2",
-      "lvl2": ".content__default h3",
-      "lvl3": ".content__default h4",
-      "lvl4": ".content__default h5",
-      "text": ".content__default p, .content__default ul li, .content__default table tbody tr"
+      "lvl0": {
+        "selector": "(//meta[@property='og:site_name']/@content)[last()]",
+        "type": "xpath",
+        "global": true,
+        "default_value": "Documentation"
+      },
+      "lvl1": "div#meta p#breadcrumbs a:nth-child(2)",
+      "lvl2": "div#meta p#breadcrumbs a:nth-child(3)",
+      "lvl3": "div#meta p#breadcrumbs a:nth-child(4)",
+      "lvl4": "div#meta p#breadcrumbs a:nth-child(5)",
+      "lvl5": "div#body h1",
+      "lvl6": "div#body h3",
+      "text": "div#body p, div#body li, div#body td:last-child"
+    },
+    "confluence": {
+      "lvl0": "#title-text h1",
+      "lvl1": "#main-content h1",
+      "lvl2": "#main-content h2",
+      "lvl3": "#main-content h3",
+      "lvl4": "#main-content h4",
+      "lvl5": "#main-content h5",
+      "lvl6": "#main-content h6",
+      "text": "#main-content p, #main-content li, #main-content th, #main-content td, #main-content placeholder-inline-tasks span"
     }
   },
   "scrape_start_urls": false,
   "strip_chars": " .,;:#",
-  "nb_hits": 505,
+  "nb_hits": 7958,
   "custom_settings": {
-    "token_separators": ["_"],
-    "symbols_to_index": ["*"]
+    "token_separators": [
+      "_"
+    ],
+    "symbols_to_index": [
+      "*"
+    ]
   }
 }
