@@ -109,6 +109,7 @@ def run_config(config):
     if os.getenv("CONFLUENCE_API_KEY"):
         process.crawl(
             ConfluenceSpider,
+            config=config,
             typesense_helper=typesense_helper,
             strategy=strategy
         )

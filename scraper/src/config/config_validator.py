@@ -12,13 +12,18 @@ class ConfigValidator:
             raise ValueError('index_name is not defined')
 
         # Start_urls is mandatory
-        if not self.config.start_urls and not self.config.sitemap_urls:
-            raise ValueError('start_urls is not defined, nor sitemap urls')
+        if not self.config.start_urls and not self.config.sitemap_urls and not self.config.confluence_base_urls:
+            raise ValueError('start_urls is not defined, nor sitemap urls, nor confluence_base_urls')
 
         # Start urls must be an array
         if self.config.start_urls and not isinstance(self.config.start_urls,
                                                      list):
             raise Exception('start_urls should be list')
+
+        # Confluence base urls must be an array
+        if self.config.confluence_base_urls and not isinstance(self.config.confluence_base_urls,
+                                                     list):
+            raise Exception('confluence_base_urls should be list')
 
         # Stop urls must be an array
         if self.config.stop_urls and not isinstance(self.config.stop_urls,
