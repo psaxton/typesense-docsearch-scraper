@@ -51,6 +51,7 @@ class ConfigLoader:
     user_agent = 'Typesense DocSearch Scraper (Bot; https://typesense.org/docs/guide/docsearch.html)'
     only_content_level = False
     query_rules = []
+    confluence_base_urls = []
 
     # data storage, starting here attribute are not config params
     config_file = None
@@ -123,6 +124,7 @@ class ConfigLoader:
         self.min_indexed_level = SelectorsParser().parse_min_indexed_level(
             self.min_indexed_level)
         self.start_urls = UrlsParser.parse(self.start_urls)
+        self.confluence_base_urls = UrlsParser.parse(self.confluence_base_urls)
 
         # Build default allowed_domains from start_urls and stop_urls
         if self.allowed_domains is None:
