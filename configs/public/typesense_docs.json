@@ -1,13 +1,12 @@
 {
   "index_name": "typesense_docs-test",
   "start_urls": [
+    "https://claimxperience.helpdocs.io/l/enUS"
+  ],
+  "confluence_base_urls": [
     {
-      "url": "https://claimxperience.helpdocs.io/l/enUS",
-      "variables": {
-        "version": [
-          "0.21.0"
-        ]
-      }
+      "url": "https://epm.verisk.com/confluence",
+      "selectors_key": "confluence"
     }
   ],
   "selectors": {
@@ -27,19 +26,31 @@
       "text": "div#body p, div#body li, div#body td:last-child"
     },
     "confluence": {
-      "lvl0": "#title-text h1",
-      "lvl1": "#main-content h1",
-      "lvl2": "#main-content h2",
-      "lvl3": "#main-content h3",
-      "lvl4": "#main-content h4",
-      "lvl5": "#main-content h5",
-      "lvl6": "#main-content h6",
-      "text": "#main-content p, #main-content li, #main-content th, #main-content td, #main-content placeholder-inline-tasks span"
+      "lvl0": {
+        "selector": "ol#breadcrumbs li:nth-child(1)",
+        "global": true
+      },
+      "lvl1": {
+        "selector": "ol#breadcrumbs li:nth-child(2)",
+        "global": true
+      },
+      "lvl2": {
+        "selector": "ol#breadcrumbs li:nth-child(3)",
+        "global": true
+      },
+      "lvl3": {
+        "selector": "h1#title-text",
+        "global": true
+      },
+      "lvl4": "div#main-content h1",
+      "lvl5": "div#main-content h2",
+      "lvl6": "div#main-content h3",
+      "text": "div#main-content p, div#main-content li, div#main-content th, div#main-content td, div#main-content h4, div#main-content h5, div#main-content h6"
     }
   },
   "scrape_start_urls": false,
   "strip_chars": " .,;:#",
-  "nb_hits": 7958,
+  "nb_hits": 4799,
   "custom_settings": {
     "token_separators": [
       "_"

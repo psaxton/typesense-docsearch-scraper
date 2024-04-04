@@ -39,17 +39,14 @@ class AbstractStrategy:
         selectors_key = 'default'
 
         if url is not None:
-            for start_url in self.config.start_urls:
+            for start_url in self.config.start_urls + self.config.confluence_base_urls:
                 if re.search(start_url['compiled_url'], url) is not None:
                     selectors_key = start_url['selectors_key']
                     break
 
         return selectors_key
 
-    def get_selectors_set(self, url, is_confluence = False):
-        if is_confluence:
-            return self.config.selectors['confluence']
-
+    def get_selectors_set(self, url):
         selectors_key = self.get_selectors_set_key(url)
 
         if selectors_key not in self.config.selectors:
