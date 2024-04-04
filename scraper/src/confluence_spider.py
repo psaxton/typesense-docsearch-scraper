@@ -26,12 +26,14 @@ class ConfluenceSpider(Spider):
         self.remove_get_params = False
         self.typesense_helper = typesense_helper
         self.strategy = strategy
-        self.base_url = os.environ.get("CONFLUENCE_BASE_URL", None)
-        space_key = os.environ.get("CONFLUENCE_SPACE_KEY", None)
-        page_limit = os.environ.get("CONFLUENCE_PAGE_LIMIT", "100")
         api_key = os.environ.get("CONFLUENCE_API_KEY", None)
-        self.get_content_url = f'{self.base_url}/rest/api/content?type=page&spaceKey={space_key}&expand=body.storage&limit={page_limit}'
+        self.confluence_space_key = os.environ.get("CONFLUENCE_SPACE_KEY", None)
+        self.confluence_page_limit = os.environ.get("CONFLUENCE_PAGE_LIMIT", "100")
         self.headers = {'Authorization' : f'Bearer {api_key}' }
+        self.confluence_base_urls = config.confluence_base_urls
+
+    def get_content_url(self, confluence_base_url):
+        return f'{confluence_base_url}/rest/api/content?type=page&spaceKey={self.confluence_space_key}&expand=ancestors,body.view&limit={self.confluence_page_limit}'
 
     def start_requests(self):
         for confluence_base_url in self.confluence_base_urls:
@@ -68,8 +70,8 @@ class ConfluenceSpider(Spider):
             """
 
             page_relative_url = result["_links"]["webui"]
-            current_page_url = f'{self.base_url}{page_relative_url}'
-            records = self.strategy.get_records_from_response(html, current_page_url, is_confluence=True)
+            current_page_url = f'{base_url}{page_relative_url}'
+            records = self.strategy.get_records_from_response(html, current_page_url)
             self.typesense_helper.add_records(records, response.url, False)
             ConfluenceSpider.NB_INDEXED += len(records)
         if response_json['size'] == response_json['limit']:
