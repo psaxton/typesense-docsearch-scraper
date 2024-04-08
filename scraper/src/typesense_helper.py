@@ -6,6 +6,7 @@ from typesense import exceptions
 import json
 from builtins import range
 import os
+from time import sleep
 
 
 class TypesenseHelper:
@@ -94,6 +95,8 @@ class TypesenseHelper:
         print(
             '\033[{}m> DocSearch: \033[0m{}\033[93m {} records\033[0m)'.format(
                 color, url, record_count))
+        # Sleep for 100ms to minimize server load
+        sleep(0.1)
 
     def commit_tmp_collection(self):
         """Update alias to point to new collection"""
