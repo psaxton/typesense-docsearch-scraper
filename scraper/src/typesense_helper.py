@@ -4,10 +4,10 @@ Wrapper on top of the Typesense API client"""
 import json
 import os
 from builtins import range
+from time import sleep
 
 import typesense
 from typesense import exceptions
-
 
 class TypesenseHelper:
     """TypesenseHelper"""
@@ -179,9 +179,9 @@ class TypesenseHelper:
 
         print(
             '\033[{}m> DocSearch: \033[0m{}\033[93m {} records\033[0m)'.format(
-                color, url, record_count
-            )
-        )
+                color, url, record_count))
+        # Sleep for 100ms to minimize server load
+        sleep(0.1)
 
     def commit_tmp_collection(self):
         """Update alias to point to new collection"""
