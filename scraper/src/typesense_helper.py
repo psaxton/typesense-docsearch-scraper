@@ -214,6 +214,12 @@ class TypesenseHelper:
             if record['hierarchy_radio'][f'lvl{x}'] is not None:
                 transformed_record[f'hierarchy_radio.lvl{x}'] = record['hierarchy_radio'][f'lvl{x}']
 
+        # Flatten nested hierarchy_radio field
+        for x in range(0, 7):
+            if record['hierarchy_radio'][f'lvl{x}'] is None:
+                continue
+            transformed_record[f'hierarchy_radio.lvl{x}'] = record['hierarchy_radio'][f'lvl{x}']
+
         # Convert version to array
         if 'version' in record and type(record['version']) == str:
             transformed_record['version'] = record['version'].split(',')
