@@ -11,6 +11,8 @@ class ConfluenceSpider(Spider):
     """
     ConfluenceSpider
     """
+    NB_INDEXED = 0 # Class variable to keep track of the number of indexed records
+
     typesense_helper: TypesenseHelper = None
     strategy: DefaultStrategy = None
     headers = { }
@@ -20,6 +22,8 @@ class ConfluenceSpider(Spider):
     confluence_page_limit = None
 
     def __init__(self, config, typesense_helper, strategy):
+        super(Spider, self).__init__(config, typesense_helper, strategy)
+
         # Scrapy config
         self.name = 'confluence'
         self.js_render = False
@@ -45,7 +49,7 @@ class ConfluenceSpider(Spider):
         for result in response_json['results']:
 
             ancestors_len = len(result['ancestors'])
-            ancestors_take =  ancestors_len if ancestors_len < 3 else 3 
+            ancestors_take =  ancestors_len if ancestors_len < 3 else 3
             html = f"""
             <!DOCTYPE html>
             <html lang="en-US" >

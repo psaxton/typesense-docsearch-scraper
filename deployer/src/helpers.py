@@ -37,7 +37,7 @@ def make_custom_get_request(url):
     return requests.get(url)
 
 
-def make_request(endpoint, type=None, data=None, username=None, password=None,
+def make_request(endpoint, type=None, data=None, username=None, password=None, # pylint: disable=too-many-positional-arguments
                  json_request=False):
     import requests
 

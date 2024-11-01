@@ -9,7 +9,7 @@ from builtins import range
 class AlgoliaHelper:
     """AlgoliaHelper"""
 
-    def __init__(self, app_id, api_key, index_name, index_name_tmp, settings, query_rules):
+    def __init__(self, app_id, api_key, index_name, index_name_tmp, settings, query_rules):  # pylint: disable=too-many-positional-arguments
         self.algolia_client = SearchClient.create(app_id, api_key)
         self.index_name = index_name
         self.index_name_tmp = index_name_tmp

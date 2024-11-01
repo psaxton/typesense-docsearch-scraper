@@ -104,7 +104,7 @@ def run_config(config):
         'DEFAULT_REQUEST_HEADERS': DEFAULT_REQUEST_HEADERS,
         'TELNETCONSOLE_ENABLED': False
     })
-    
+
     if os.getenv("CONFLUENCE_API_KEY"):
         process.crawl(
             ConfluenceSpider,
